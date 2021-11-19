@@ -1,0 +1,7 @@
+class SceneHandler {
+  
+  void menu(){
+  
+  }
+  
+}
