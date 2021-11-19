@@ -1,3 +1,5 @@
+public float pfreezex, pfreezey;
+
 class Player {
   PVector pos = new PVector();
   PVector size = new PVector();
@@ -5,7 +7,7 @@ class Player {
   // half a pixel per frame gravity
   float gravity = .5;
 
-  // Y coordinate of gruond for collision
+  // Y coordinate of ground for collision
   float ground = height - 150;
 
   PVector velocity = new PVector(0, 0);
@@ -32,31 +34,12 @@ class Player {
       velocity.y = 0;
     }
 
-    // Check collision with blocks on map and don't move if hitting a block
-
-    //BUG: Cannot jump when on the block
-    //BUG: Jumping from bottom to top, makes you teleport to the top instead of a collision.
-    for (int i = 0; i < blocks.size(); i++) {
-      Block bl = blocks.get(i);
-      if (onSideBlockCollision(pos.x, pos.y, size.x, size.y, bl.pos.x, bl.pos.y, bl.size.x, bl.size.y)) {
-        if (pos.y + size.y >= bl.pos.y) { // jump from top to bottom
-          // remove gravity
-          velocity.y = 0;
-          // make player stand on block
-          pos.y = bl.pos.y - size.y;
-        }
-        if (pos.y + size.y == bl.pos.y && up != 0) {
-          velocity.y = -jumpSpeed;
-        }
-
-        if (pos.y + size.y == bl.pos.y && down != 0) {
-          velocity.y += gravity;
-        }
-      }
-    }
+    blockCollision();
+    luckyblockCollision();
 
     // If the player is under the ground
     if (pos.y > ground) pos.y = ground;
+
 
     // If on the ground and "jump" keyy is pressed set my upward velocity to the jump speed!
     if (pos.y >= ground && up != 0)
@@ -89,26 +72,13 @@ class Player {
     // The first is by counting through the elements:
     for (int i = 0; i < enemys.size(); i++) {
       Enemy enemy = enemys.get(i);
-      if (enemy.playerIsDead()) {
-        textSize(40);
-        fill(0);
-        text("u died", width/2, height/2);
-      }
     }
   }
 
   void drawPlayer() {
     int w = (int) size.x;
     int h = (int) size.y;
-    if (isPlayerRunningRight()) {
-      image(runningRight[frameCount%2], pos.x, pos.y);
-    } else if (isPlayerRunningLeft()) {
-      image(runningLeft[frameCount%2], pos.x, pos.y);
-    } else if (isPlayerStandingStill()) {
-      image(standingStill, pos.x, pos.y);
-    } else if(isPlayerJumping()){
-      // do jumping animation here
-    }
+    playerAnimation();
   }
 
   boolean isPlayerStandingStill() {
@@ -120,7 +90,7 @@ class Player {
   }
 
   boolean isPlayerRunningLeft() {
-    if (left != 0) {
+    if (left != 0 && up == 0) {
       // running left
       return true;
     }
@@ -128,7 +98,7 @@ class Player {
   }
 
   boolean isPlayerRunningRight() {
-    if (right != 0) {
+    if (right != 0 && up == 0) {
       // running right
       return true;
     }
@@ -152,5 +122,92 @@ class Player {
       return true;
     }
     return false;
+  }
+
+  boolean isPlayerInAir() {
+    for (int i = 0; i < blocks.size(); i++) {
+      Block bl = blocks.get(i);
+      if (pos.y < ground) { // above ground?
+        if (pos.y + size.y == bl.pos.y) { // make sure not on a block
+        } else return true;
+      }
+    }
+    return false;
+  }
+
+
+  void playerAnimation() {
+    if (!gameOver) {
+      if (isPlayerInAir()) {
+        if (left != 0) image(jumpingLeft[4], pos.x, pos.y);
+        else if (right != 0) image(jumpingRight[4], pos.x, pos.y);
+        else image(jumpingRight[4], pos.x, pos.y);
+      } else if (isPlayerRunningRight()) {
+        image(runningRight[frameCount%2], pos.x, pos.y);
+      } else if (isPlayerRunningLeft()) {
+        image(runningLeft[frameCount%2], pos.x, pos.y);
+      } else if (isPlayerStandingStill()) {
+        image(standingStill, pos.x, pos.y);
+      }
+    } else {
+      image(marioDead, pfreezex, pfreezey + 20);
+    }
+  }
+
+  void luckyblockCollision() {
+    // Check collision with lucky blocks on map and don't move if hitting a block
+
+    //BUG: Cannot jump when on the block
+    //BUG: Jumping from bottom to top, makes you teleport to the top instead of a collision.
+    for (int i = 0; i < luckyblocks.size(); i++) {
+      LuckyBlock bl = luckyblocks.get(i);
+      if (onSideBlockCollision(pos.x, pos.y, size.x, size.y, bl.pos.x, bl.pos.y, bl.size.x, bl.size.y)) {
+        if (pos.y + size.y >= bl.pos.y) { // jump from top to bottom
+          // remove gravity
+          velocity.y = 0;
+          // make player stand on block
+          pos.y = bl.pos.y - size.y;
+        }
+        if (pos.y + size.y == bl.pos.y && up != 0) {
+          velocity.y = -jumpSpeed;
+        }
+
+        if (pos.y + size.y == bl.pos.y && down != 0) {
+          velocity.y += gravity;
+        }
+      }
+    }
+  }
+
+
+  void blockCollision() {
+    // Check collision with blocks on map and don't move if hitting a block
+
+    //BUG: Cannot jump when on the block
+    //BUG: Jumping from bottom to top, makes you teleport to the top instead of a collision.
+    for (int i = 0; i < blocks.size(); i++) {
+      Block bl = blocks.get(i);
+      if (onSideBlockCollision(pos.x, pos.y, size.x, size.y, bl.pos.x, bl.pos.y, bl.size.x, bl.size.y)) {
+        if (pos.y + size.y >= bl.pos.y) { // jump from top to bottom
+          // remove gravity
+          velocity.y = 0;
+          // make player stand on block
+          pos.y = bl.pos.y - size.y;
+        }
+        if (pos.y + size.y == bl.pos.y && up != 0) {
+          velocity.y = -jumpSpeed;
+        }
+
+        if (pos.y + size.y == bl.pos.y && down != 0) {
+          velocity.y += gravity;
+        }
+      }
+    }
+  }
+
+
+  void freezePlayer() {
+    pos.x = pfreezex;
+    pos.y = pfreezey;
   }
 }

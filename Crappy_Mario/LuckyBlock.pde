@@ -11,9 +11,6 @@ class LuckyBlock {
   
   void update(){
     spawn();
-    
-    
-    // check for collision
   }
   
   void spawn(){

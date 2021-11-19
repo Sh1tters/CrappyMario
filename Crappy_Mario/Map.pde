@@ -18,15 +18,10 @@ class Map {
     image(cloud, width/2, height/2-300);
     image(cloud, width/2+400, height/2-500);
     image(cloud, width/2-600, height/2-550);
-    
-    fill(#35C14D);
     pos.x = -50;
     for (int i = 0; i < 100; i++) {
       image(blockpng, pos.x, pos.y);
-   //   rect(pos.x, pos.y+50, size.x, size.y);
       pos.x+=50;
     }
-    
-
   }
 }
