@@ -1,6 +1,9 @@
 public String gameState = "Splash Screen";
 
 class SceneHandler {
+  int selected = 1;
+  boolean keyReleased = false;
+  int runtime = 0;
 
   void main() {
     if (gameState == "Splash Screen") {
@@ -13,12 +16,19 @@ class SceneHandler {
     if (gameState == "startGame") {
       startGame();
     }
+    if (gameState == "GameOver") {
+      gameOver();
+    }
 
 
     if (gameOver) gameState = "GameOver";
   }
 
   void splashScreen() {
+    if (!startup.isPlaying()) {
+      startup.play();
+      startup.amp(0.1);
+    }
     background(0);
     textFade();
     textFade2();
@@ -47,8 +57,37 @@ class SceneHandler {
 
   void menu() {
     background(0);
+    textFont(menuFont, 60);
     textAlign(CENTER);
-    text("MENU SCREEN", width/2, height/2);
+    text("START GAME", width/2, height/2);
+    text("HELP", width/2, height/2+100);
+    text("ABOUT", width/2, height/2+200);
+    text("QUIT", width/2, height/2+300);
+    imageMode(CENTER);
+    smb.resize(582, 455);
+    image(smb, width/2, height/5);
+
+    if (selected == 1) image(mush, width/2-305, height/2-20);
+    if (selected == 2) image(mush, width/2-155, height/2+100-20);
+    if (selected == 3) image(mush, width/2-180, height/2+200-20);
+    if (selected == 4) image(mush, width/2-110, height/2+300-20);
+
+    if (keyReleased && keyCode == UP || keyReleased && key == 'w') {
+      if (selected != 1)  selected = selected - 1;
+      keyReleased = false;
+    }
+    if (keyReleased && keyCode == DOWN || keyReleased && key == 's') {
+      if (selected != 4)   selected = selected + 1;
+      keyReleased = false;
+    }
+
+
+    if (keyReleased && keyCode == ENTER) {
+      if (selected == 1) gameState = "startGame";
+
+
+      if (selected == 4) exit();
+    }
   }
 
   void startGame() {
@@ -81,16 +120,23 @@ class SceneHandler {
     }
 
 
-    textSize(10);
+    textSize(20);
     fill(0);
-    text("Enemies: "+enemys.size(), 50, 20);
-    text("Blocks: " + blocks.size(), 50, 40);
-    text("Map Length: "+map.mapLength, 50, 60);
-    text("Frames: "+frameRate, 50, 80);
-    text("Player X,Y: " + player.pos.x + "," + player.pos.y, 50, 100);
-    text("Lucky Blocks: " + luckyblocks.size(), 50, 120);
-    text("Coins: " + coins.size(), 50, 140);
-    text("Collected coins: " + collected_coins, 50, 160);
+    //text("Enemies: "+enemys.size(), 50, 20);
+    // text("Blocks: " + blocks.size(), 50, 40);
+    //  text("Map Length: "+map.mapLength, 50, 60);
+    //  text("Frames: "+frameRate, 50, 80);
+    //   text("Player X,Y: " + player.pos.x + "," + player.pos.y, 50, 100);
+    //   text("Lucky Blocks: " + luckyblocks.size(), 50, 120);
+    //   text("Coins: " + coins.size(), 50, 140);
+    //   text("Collected coins: " + collected_coins, 50, 160);
+
+    fill(0);
+    textFont(mainFont);
+    text("MARIO", 80, 80);
+    text(score, 80, 120);
+    text("RUN TIME", 300, 80);
+    text(runtime + "s", 300, 120);
   }
 
 
@@ -102,8 +148,10 @@ class SceneHandler {
       e.freezeEnemies();
     }
 
+    textFont(gameOverFont);
     textAlign(CENTER);
     textSize(70);
+    fill(0);
     text("GAME OVER!", width/2, height/2);
   }
 

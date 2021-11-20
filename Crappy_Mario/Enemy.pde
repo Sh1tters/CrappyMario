@@ -39,6 +39,7 @@ class Enemy {
           gameOver = true;
         }
       } else {
+        score += random(100, 700);
         image(goombaDead, pos.x, pos.y + 10);
         enemys.remove(i);
       }

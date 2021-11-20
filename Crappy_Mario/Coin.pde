@@ -27,6 +27,7 @@ class Coin {
     for (int i = 0; i < coins.size(); i++) {
       Coin c = coins.get(i);
       if (player.onSideBlockCollision(player.pos.x, player.pos.y, player.size.x, player.size.y, c.pos.x, c.pos.y, c.size.x, c.size.y)) {
+        score += random(100,200);
         coins.remove(i);
         collected_coins+=1;
       }

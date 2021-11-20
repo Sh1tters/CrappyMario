@@ -8,17 +8,20 @@ Enemy[] enemy;
 Block[] block;
 LuckyBlock[] luckyblock;
 Coin[] coin;
+PFont mainFont, gameOverFont, menuFont, scoreFont;
+
 int unit = 3;
 ArrayList<Enemy> enemys = new ArrayList<Enemy>();
 ArrayList<Block> blocks = new ArrayList<Block>();
 ArrayList<LuckyBlock> luckyblocks = new ArrayList<LuckyBlock>();
 ArrayList<Coin> coins = new ArrayList<Coin>();
 
-PImage blockpng, cloud, sky, luckyblockpng, standingStill, coinpng, goombaDead, marioDead;
+PImage blockpng, cloud, sky, luckyblockpng, standingStill, coinpng, goombaDead, marioDead, smb, mush;
 PImage[] runningLeft, runningRight, jumpingRight, jumpingLeft, goombaAlive;
 
 private int level;
 public int collected_coins;
+public int score = 000000;
 public boolean gameOver = false;
 
 /* Splash Screen Variables */
@@ -47,9 +50,7 @@ void setup() {
   level = 1;
 
   startup = new SoundFile(this, "startup.wav");
-  startup.play();
-  startup.amp(0.2);
-  
+
   map = new Map();
   player = new Player();
   sh = new SceneHandler();
@@ -64,6 +65,11 @@ void setup() {
   jumpingLeft = new PImage[6];
   goombaAlive = new PImage[2];
 
+  mainFont = createFont("Impact", 40);
+  gameOverFont = createFont("LCDMono2 Bold", 128);
+  scoreFont  = createFont("LCDMono2 Bold", 40);
+  menuFont = createFont("hooge 05_54", 60);
+
   goombaDead = loadImage("goombaDead.png");
   blockpng = loadImage("block.png");
   cloud = loadImage("cloud.png");
@@ -71,6 +77,8 @@ void setup() {
   luckyblockpng = loadImage("lucky.png");
   coinpng = loadImage("coin.png");
   marioDead = loadImage("dead.png");
+  smb = loadImage("smb.png");
+  mush = loadImage("mushroom.png");
 
   loadTiles();
 
@@ -142,6 +150,7 @@ void keyReleased() {
       player.up = 0;
     }
   }
+  sh.keyReleased = true;
 }
 
 
