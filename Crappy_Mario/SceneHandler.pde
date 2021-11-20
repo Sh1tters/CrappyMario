@@ -1,4 +1,4 @@
-public String gameState = "Splash Screen";
+public String gameState = "startGame";
 
 class SceneHandler {
   int selected = 1;
@@ -16,6 +16,10 @@ class SceneHandler {
     if (gameState == "startGame") {
       startGame();
     }
+    if (gameState == "GameOver") {
+      gameOver();
+    }
+
     if (gameState == "GameOver") {
       gameOver();
     }
