@@ -20,7 +20,6 @@ class Enemy {
     pos.x += xspeed;
 
     if (pos.x < 0 || pos.x > width) {
-      println("lol");
       xspeed *= -1;
     }
   }
@@ -30,7 +29,7 @@ class Enemy {
       Enemy e = enemys.get(i);
       RectangleSide collisionSide = goombaIsDead(e.pos.x, e.pos.y, e.size.x, e.size.y);
       if (collisionSide == null || collisionSide == RectangleSide.RIGHT || collisionSide == RectangleSide.LEFT) {
-        image(goombaAlive[frameCount%2], pos.x, pos.y);
+        image(goombaAlive[(frameCount / 3) % goombaAlive.length], pos.x, pos.y);
         if (collisionSide == RectangleSide.RIGHT || collisionSide == RectangleSide.LEFT) {
           pfreezex = player.pos.x;
           pfreezey = player.pos.y;
@@ -72,13 +71,13 @@ class Enemy {
 
     return side;
   }
-  
-  void freezeEnemies(){
-   for(int i = 0; i < enemys.size(); i++){
+
+  void freezeEnemies() {
+    for (int i = 0; i < enemys.size(); i++) {
       Enemy e = enemys.get(i);
       e.pos.x = efreezex;
       e.pos.y = efreezey;
-   }
+    }
   }
 }
 

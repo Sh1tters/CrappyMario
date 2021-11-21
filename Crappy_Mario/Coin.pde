@@ -12,7 +12,7 @@ class Coin {
 
   void update() {
     spawn();
-    
+
     playerCollision();
   }
 

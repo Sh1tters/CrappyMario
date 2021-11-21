@@ -19,7 +19,7 @@ ArrayList<Coin> coins = new ArrayList<Coin>();
 PImage blockpng, cloud, sky, luckyblockpng, standingStill, coinpng, goombaDead, marioDead, smb, mush;
 PImage[] runningLeft, runningRight, jumpingRight, jumpingLeft, goombaAlive;
 
-private int level;
+public int level;
 public int collected_coins;
 public int score = 000000;
 public boolean gameOver = false;
@@ -47,7 +47,6 @@ void setup() {
   timePast0 = millis();
   timeInterval0 = 3000.0f;
 
-  level = 1;
 
   startup = new SoundFile(this, "startup.wav");
 
@@ -132,7 +131,7 @@ void keyPressed() {
 }
 
 void keyReleased() {
-  if (!gameOver) {
+  if (!gameOver && gameState == "startGame") {
     if (key == 'd')
     {
       player.right = 0;

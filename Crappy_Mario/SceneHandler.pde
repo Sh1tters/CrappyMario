@@ -1,11 +1,18 @@
-public String gameState = "startGame";
+boolean toMenu = false;
+
+public String gameState = "Splash Screen";
 
 class SceneHandler {
+  int start;
   int selected = 1;
+  int levelSelected = 1;
   boolean keyReleased = false;
   int runtime = 0;
 
   void main() {
+    if (toMenu) {
+      gameState = "menu";
+    }
     if (gameState == "Splash Screen") {
       splashScreen();
     }
@@ -19,13 +26,55 @@ class SceneHandler {
     if (gameState == "GameOver") {
       gameOver();
     }
+    if (gameState == "Levels") {
+      levels();
+    }
 
-    if (gameState == "GameOver") {
-      gameOver();
+    if (gameOver && !toMenu) gameState = "GameOver";
+  }
+
+  void levels() {
+    background(0);
+    fill(255);
+    imageMode(CENTER);
+    smb.resize(582, 455);
+    image(smb, width/2, height/5);
+    textAlign(CENTER);
+    text("Select a level!", width/2+75, height/3+100);
+
+    textFont(menuFont, 60);
+    for (int i = 1, w = width/2-250; i < 5; i++) {
+      if (i == levelSelected) fill(#F22C2C);
+      else fill(255);
+      textAlign(LEFT);
+      text(i, w, height/2+50);
+      w += 200;
+    }
+    for (int i = 5, w = width/2-250; i < 9; i++) {
+      if (i == levelSelected) fill(#F22C2C);
+      else fill(255);
+      textAlign(LEFT);
+      text(i, w, height/2+250);
+      w += 200;
     }
 
 
-    if (gameOver) gameState = "GameOver";
+    if (keyReleased && keyCode == LEFT || keyReleased && key == 'a') {
+      if (levelSelected != 1) levelSelected = levelSelected - 1;
+      keyReleased = false;
+    }
+    if (keyReleased && keyCode == RIGHT || keyReleased && key == 'd') {
+      if (levelSelected != 8) levelSelected = levelSelected + 1;
+      keyReleased = false;
+    }
+
+    if (keyReleased && keyCode == ENTER) {
+      if (selected == 1) {
+        start = millis();
+        gameState = "startGame";
+        level = levelSelected;
+      }
+    }
   }
 
   void splashScreen() {
@@ -74,7 +123,7 @@ class SceneHandler {
     if (selected == 1) image(mush, width/2-305, height/2-20);
     if (selected == 2) image(mush, width/2-155, height/2+100-20);
     if (selected == 3) image(mush, width/2-180, height/2+200-20);
-    if (selected == 4) image(mush, width/2-110, height/2+300-20);
+    if (selected == 4) image(mush, width/2-140, height/2+300-20);
 
     if (keyReleased && keyCode == UP || keyReleased && key == 'w') {
       if (selected != 1)  selected = selected - 1;
@@ -85,16 +134,18 @@ class SceneHandler {
       keyReleased = false;
     }
 
-
     if (keyReleased && keyCode == ENTER) {
-      if (selected == 1) gameState = "startGame";
-
-
+      if (selected == 1) {
+        gameState = "Levels";
+        keyReleased = false;
+      }
       if (selected == 4) exit();
     }
   }
 
+
   void startGame() {
+    int ms = millis()-start;
     // load levels
     map.loadMap();
 
@@ -138,8 +189,13 @@ class SceneHandler {
     fill(0);
     textFont(mainFont);
     text("MARIO", 80, 80);
-    text(score, 80, 120);
+    textSize(15);
+    text("Score: " + score, 80, 120);
+    textSize(20);
     text("RUN TIME", 300, 80);
+
+    int sec = ms/1000;
+    runtime = sec;
     text(runtime + "s", 300, 120);
   }
 
@@ -156,7 +212,13 @@ class SceneHandler {
     textAlign(CENTER);
     textSize(70);
     fill(0);
-    text("GAME OVER!", width/2, height/2);
+    text("GAME OVER!", width/2, height/4);
+    textSize(40);
+    text("Total Score: " + score, width/2, height/4+100);
+    text("Run Time: " + runtime + " seconds", width/2, height/4+150);
+
+    textSize(30);
+    text("Press any key to return to menu", width/2, height/4+200);
   }
 
 

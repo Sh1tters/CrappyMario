@@ -67,17 +67,9 @@ class Player {
     }
 
     drawPlayer();
-
-    // You can iterate over an ArrayList in two ways.
-    // The first is by counting through the elements:
-    for (int i = 0; i < enemys.size(); i++) {
-      Enemy enemy = enemys.get(i);
-    }
   }
 
   void drawPlayer() {
-    int w = (int) size.x;
-    int h = (int) size.y;
     playerAnimation();
   }
 
@@ -143,9 +135,9 @@ class Player {
         else if (right != 0) image(jumpingRight[4], pos.x, pos.y);
         else image(jumpingRight[4], pos.x, pos.y);
       } else if (isPlayerRunningRight()) {
-        image(runningRight[frameCount%2], pos.x, pos.y);
+        image(runningRight[(frameCount / 3) % runningRight.length], pos.x, pos.y);
       } else if (isPlayerRunningLeft()) {
-        image(runningLeft[frameCount%2], pos.x, pos.y);
+        image(runningLeft[(frameCount / 3) % runningLeft.length], pos.x, pos.y);
       } else if (isPlayerStandingStill()) {
         image(standingStill, pos.x, pos.y);
       }
@@ -209,5 +201,10 @@ class Player {
   void freezePlayer() {
     pos.x = pfreezex;
     pos.y = pfreezey;
+  }
+  
+  void unfreezePlayer(){
+    pos.x = pos.x;
+    pos.y = pos.y;
   }
 }
