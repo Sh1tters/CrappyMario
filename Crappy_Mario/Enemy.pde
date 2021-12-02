@@ -4,7 +4,8 @@ class Enemy {
   PVector pos = new PVector();
   PVector size = new PVector();
   int index = 1;
-  float xspeed = random(1, 4);
+  float xspeed = random(3, 6);
+
   boolean dead = false;
 
   Enemy(float xsize, float ysize, float xpos, float ypos) {
@@ -15,16 +16,29 @@ class Enemy {
   }
 
   void update() {
-    drawEnemy();
+    drawGoomba();
 
     pos.x += xspeed;
-
+    for (int i = 0; i < blocks.size(); i++) {
+      Block bl = blocks.get(i);
+      //  ellipse(bl.pos.x + 25, bl.pos.y - 25, 5,5);
+      if (pos.x > bl.pos.x - 50 && pos.y == bl.pos.y || pos.x - 100> bl.pos.x - 50 && pos.y == bl.pos.y) {
+        xspeed *=-1;
+      }
+    }
     if (pos.x < 0 || pos.x > width) {
       xspeed *= -1;
     }
   }
 
-  void drawEnemy() {
+
+  void drawGoomba() {
+    for(int i = 0; i < goombaAlive.length; i++){
+      int w = (int) size.x;
+      int h = (int) size.y;
+            goombaAlive[i].resize(w, h);
+    }
+    
     for (int i = 0; i < enemys.size(); i++) {
       Enemy e = enemys.get(i);
       RectangleSide collisionSide = goombaIsDead(e.pos.x, e.pos.y, e.size.x, e.size.y);
@@ -36,8 +50,10 @@ class Enemy {
           efreezex = pos.x;
           efreezey = pos.y;
           gameOver = true;
+          gameFinish = false;
         }
       } else {
+        player.velocity.y = -player.jumpSpeed;
         score += random(100, 700);
         image(goombaDead, pos.x, pos.y + 10);
         enemys.remove(i);

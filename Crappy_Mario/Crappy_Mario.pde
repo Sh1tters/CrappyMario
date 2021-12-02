@@ -6,23 +6,24 @@ SceneHandler sh;
 Player player;
 Enemy[] enemy;
 Block[] block;
-LuckyBlock[] luckyblock;
 Coin[] coin;
+LaunchPad[] launch;
 PFont mainFont, gameOverFont, menuFont, scoreFont;
 
 int unit = 3;
 ArrayList<Enemy> enemys = new ArrayList<Enemy>();
 ArrayList<Block> blocks = new ArrayList<Block>();
-ArrayList<LuckyBlock> luckyblocks = new ArrayList<LuckyBlock>();
 ArrayList<Coin> coins = new ArrayList<Coin>();
+ArrayList<LaunchPad> launchs = new ArrayList<LaunchPad>();
 
-PImage blockpng, cloud, sky, luckyblockpng, standingStill, coinpng, goombaDead, marioDead, smb, mush;
+PImage blockpng, cloud, sky, luckyblockpng, standingStill, coinpng, goombaDead, marioDead, smb, mush, finish, boostblock;
 PImage[] runningLeft, runningRight, jumpingRight, jumpingLeft, goombaAlive;
 
 public int level;
 public int collected_coins;
 public int score = 000000;
 public boolean gameOver = false;
+public boolean gameFinish = false;
 
 /* Splash Screen Variables */
 //1
@@ -55,8 +56,8 @@ void setup() {
   sh = new SceneHandler();
   enemy = new Enemy[unit];
   block = new Block[unit];
-  luckyblock = new LuckyBlock[unit];
   coin = new Coin[unit];
+  launch = new LaunchPad[unit];
 
   runningRight = new PImage[2];
   runningLeft = new PImage[2];
@@ -78,28 +79,10 @@ void setup() {
   marioDead = loadImage("dead.png");
   smb = loadImage("smb.png");
   mush = loadImage("mushroom.png");
+  finish = loadImage("finish.png");
+  boostblock = loadImage("boostblock.png");
 
   loadTiles();
-
-  for (int i = 0; i < unit; i++)
-  {
-    enemys.add(new Enemy(50, 50, random(200, width-100), height-150));
-  }
-
-  // testing blocks class
-  fill(0);
-  for (int i = 0, x = 300; i < 5; i++) {
-    blocks.add(new Block(50, 50, x, 850));
-    x = x + 50;
-  }
-
-  // testing lucky blocks
-  luckyblocks.add(new LuckyBlock(50, 50, 650, 800));
-
-  coins.add(new Coin(30, 30, 350, 700));
-  coins.add(new Coin(30, 30, 400, 700));
-  coins.add(new Coin(30, 30, 450, 700));
-
   fullScreen();
 }
 
@@ -108,7 +91,7 @@ void draw() {
 }
 
 void keyPressed() {
-  if (!gameOver && gameState == "startGame") {
+  if (!gameOver&& !gameFinish && gameState == "startGame") {
     if (key == 'd')
     {
       player.right = 1;
@@ -131,7 +114,12 @@ void keyPressed() {
 }
 
 void keyReleased() {
-  if (!gameOver && gameState == "startGame") {
+  if (gameState == "GameFinish" || gameState == "GameOver") {
+    background(0);
+    delay(500);
+    gameState = "menu";
+  }
+  if (!gameOver && !gameFinish && gameState == "startGame") {
     if (key == 'd')
     {
       player.right = 0;

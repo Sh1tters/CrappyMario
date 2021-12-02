@@ -21,31 +21,18 @@ class Player {
     size.y = 50;
     sizex = size.y;
     pos.x = 100;
-    pos.y = height - 100;
+    pos.y = height - 300;
   }
 
   void updatePlayer() {
-    // Only apply gravity if above ground (since y positive is down we use < ground) & apply gravity if were not standing on a block
-    if (pos.y < ground)
-    {
+    if (pos.y < ground) {
       velocity.y += gravity;
     } else
     {
       velocity.y = 0;
     }
-
     blockCollision();
-    luckyblockCollision();
-
-    // If the player is under the ground
-    if (pos.y > ground) pos.y = ground;
-
-
-    // If on the ground and "jump" keyy is pressed set my upward velocity to the jump speed!
-    if (pos.y >= ground && up != 0)
-    {
-      velocity.y = -jumpSpeed;
-    }
+    launchpadCollision();
 
     // Wlak left and right.
     velocity.x = walkSpeed * (left + right);
@@ -64,6 +51,11 @@ class Player {
     if (nextpos.y > offset && nextpos.y < (height - offset))
     {
       pos.y = nextpos.y;
+    }
+    if (pos.x > 1910) {
+      gameFinish = true;
+      gameOver = false;
+      gameState = "GameFinish";
     }
 
     drawPlayer();
@@ -116,12 +108,31 @@ class Player {
     return false;
   }
 
+
+  boolean onBlockCollision(float px, float pw, float bx, float bw) {
+    if (px + pw >= bx &&
+      px <= bx + bw) {
+      return true;
+    }
+    return false;
+  }
+
   boolean isPlayerInAir() {
     for (int i = 0; i < blocks.size(); i++) {
       Block bl = blocks.get(i);
       if (pos.y < ground) { // above ground?
         if (pos.y + size.y == bl.pos.y) { // make sure not on a block
         } else return true;
+      }
+    }
+    return false;
+  }
+
+  boolean isPlayerOnBlock() {
+    for (int i = 0; i < blocks.size(); i++) {
+      Block bl = blocks.get(i);
+      if (pos.y + size.y == bl.pos.y) { // make sure not on a block
+        return true;
       }
     }
     return false;
@@ -135,9 +146,9 @@ class Player {
         else if (right != 0) image(jumpingRight[4], pos.x, pos.y);
         else image(jumpingRight[4], pos.x, pos.y);
       } else if (isPlayerRunningRight()) {
-        image(runningRight[(frameCount / 3) % runningRight.length], pos.x, pos.y);
+        image(runningRight[(frameCount / 4) % runningRight.length], pos.x, pos.y);
       } else if (isPlayerRunningLeft()) {
-        image(runningLeft[(frameCount / 3) % runningLeft.length], pos.x, pos.y);
+        image(runningLeft[(frameCount / 4) % runningLeft.length], pos.x, pos.y);
       } else if (isPlayerStandingStill()) {
         image(standingStill, pos.x, pos.y);
       }
@@ -146,53 +157,71 @@ class Player {
     }
   }
 
-  void luckyblockCollision() {
-    // Check collision with lucky blocks on map and don't move if hitting a block
+  void blockCollision() {
+    for (int i = 0; i < blocks.size(); i++) {
+      Block bl = blocks.get(i);
+      BlockSide collisionSide = blockCol(bl.pos.x, bl.pos.y, bl.size.x, bl.size.y);
 
-    //BUG: Cannot jump when on the block
-    //BUG: Jumping from bottom to top, makes you teleport to the top instead of a collision.
-    for (int i = 0; i < luckyblocks.size(); i++) {
-      LuckyBlock bl = luckyblocks.get(i);
-      if (onSideBlockCollision(pos.x, pos.y, size.x, size.y, bl.pos.x, bl.pos.y, bl.size.x, bl.size.y)) {
-        if (pos.y + size.y >= bl.pos.y) { // jump from top to bottom
-          // remove gravity
-          velocity.y = 0;
-          // make player stand on block
-          pos.y = bl.pos.y - size.y;
-        }
-        if (pos.y + size.y == bl.pos.y && up != 0) {
+      if (collisionSide == BlockSide.TOP) {
+        velocity.y = 0;
+        pos.y = bl.pos.y - bl.size.y;
+        // If on the ground and "jump" keyy is pressed set my upward velocity to the jump speed!
+        if (up != 0)
+        {
           velocity.y = -jumpSpeed;
         }
-
-        if (pos.y + size.y == bl.pos.y && down != 0) {
-          velocity.y += gravity;
-        }
+      } else if (collisionSide == BlockSide.RIGHT) {
+        pos.x = pos.x+5;
+      } else if (collisionSide == BlockSide.LEFT) {
+        pos.x = pos.x - 5;
+      } else if (collisionSide == BlockSide.BOTTOM) {
+        pos.y = pos.y + 5;
       }
     }
   }
 
+  public BlockSide blockCol(float x, float y, float w, float h) {
+    BlockSide side = null;
 
-  void blockCollision() {
-    // Check collision with blocks on map and don't move if hitting a block
+    float dx = (player.pos.x + player.size.x / 2) - (x + w / 2);
+    float dy = (player.pos.y + player.size.y / 2) - (y + h / 2);
+    float width = (player.size.x + w) / 2;
+    float height = (player.size.y + h) / 2;
+    float crossWidth = width * dy;
+    float crossHeight = height * dx;
 
-    //BUG: Cannot jump when on the block
-    //BUG: Jumping from bottom to top, makes you teleport to the top instead of a collision.
-    for (int i = 0; i < blocks.size(); i++) {
-      Block bl = blocks.get(i);
-      if (onSideBlockCollision(pos.x, pos.y, size.x, size.y, bl.pos.x, bl.pos.y, bl.size.x, bl.size.y)) {
-        if (pos.y + size.y >= bl.pos.y) { // jump from top to bottom
-          // remove gravity
-          velocity.y = 0;
-          // make player stand on block
-          pos.y = bl.pos.y - size.y;
-        }
-        if (pos.y + size.y == bl.pos.y && up != 0) {
-          velocity.y = -jumpSpeed;
-        }
+    //It works by checking if the 2 rectangles centers are close enough to be colliding
+    //if so check the intersection depths to determine which side was most involved in the collision
 
-        if (pos.y + size.y == bl.pos.y && down != 0) {
-          velocity.y += gravity;
-        }
+    if (abs(dx) <= width && abs(dy) <= height) {
+      boolean c = crossWidth > -crossHeight;
+      if (crossWidth > crossHeight) { //either bottom or left
+        side = c ? BlockSide.BOTTOM : BlockSide.LEFT;
+      } else {
+        side = c ? BlockSide.RIGHT : BlockSide.TOP;
+      }
+    }
+
+    return side;
+  }
+
+
+  void launchpadCollision() {
+    for (int i = 0; i < launchs.size(); i++) {
+      LaunchPad bl = launchs.get(i);
+      BlockSide collisionSide = blockCol(bl.pos.x, bl.pos.y, bl.size.x, bl.size.y);
+
+      if (collisionSide == BlockSide.TOP) {
+        velocity.y = 0;
+        pos.y = bl.pos.y - bl.size.y;
+        velocity.y = -30;
+      } else if (collisionSide == BlockSide.RIGHT) {
+        pos.x = pos.x+5;
+      } else if (collisionSide == BlockSide.LEFT) {
+        pos.x = pos.x - 5;
+      } else if (collisionSide == BlockSide.BOTTOM) {
+        pos.y = pos.y + 5;
+        velocity.y = 30;
       }
     }
   }
@@ -202,9 +231,12 @@ class Player {
     pos.x = pfreezex;
     pos.y = pfreezey;
   }
-  
-  void unfreezePlayer(){
+
+  void unfreezePlayer() {
     pos.x = pos.x;
     pos.y = pos.y;
   }
+}
+private enum BlockSide {
+  BOTTOM, LEFT, RIGHT, TOP;
 }

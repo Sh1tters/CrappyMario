@@ -1,6 +1,6 @@
 boolean toMenu = false;
 
-public String gameState = "Splash Screen";
+public String gameState = "menu";
 
 class SceneHandler {
   int start;
@@ -8,26 +8,24 @@ class SceneHandler {
   int levelSelected = 1;
   boolean keyReleased = false;
   int runtime = 0;
+  int endruntime = 0;
 
   void main() {
     if (toMenu) {
       gameState = "menu";
-    }
-    if (gameState == "Splash Screen") {
+    } else if (gameState == "Splash Screen") {
       splashScreen();
-    }
-
-    if (gameState == "menu") {
-      menu();
-    }
-    if (gameState == "startGame") {
+    } else if (gameState == "startGame") {
       startGame();
-    }
-    if (gameState == "GameOver") {
+    } else if (gameState == "GameOver") {
       gameOver();
-    }
-    if (gameState == "Levels") {
+    } else if (gameState == "GameFinish") {
+      gameFinish();
+    } else if (gameState == "Levels") {
       levels();
+    } else if (gameState == "menu") {
+      gameOver = false;
+      menu();
     }
 
     if (gameOver && !toMenu) gameState = "GameOver";
@@ -69,9 +67,101 @@ class SceneHandler {
     }
 
     if (keyReleased && keyCode == ENTER) {
-      if (selected == 1) {
+      println(levelSelected);
+      if (levelSelected ==  1 && gameState != "startGame") {
+        println("debug");
+        player.pos.x = 100;
+        player.pos.y = height - 300;
+        player.jumpSpeed = 10;
+        player.walkSpeed = 4;
+
         start = millis();
         gameState = "startGame";
+        map.level1();
+        level = levelSelected;
+      }
+      if (levelSelected ==  2 && gameState != "startGame") {
+        println("debug");
+        player.pos.x = 100;
+        player.pos.y = height - 300;
+        player.jumpSpeed = 10;
+        player.walkSpeed = 4;
+
+        start = millis();
+        gameState = "startGame";
+        map.level2();
+        level = levelSelected;
+      }
+      if (levelSelected ==  3 && gameState != "startGame") {
+        println("debug");
+        player.pos.x = 100;
+        player.pos.y = height - 300;
+        player.jumpSpeed = 10;
+        player.walkSpeed = 4;
+
+        start = millis();
+        gameState = "startGame";
+        map.level3();
+        level = levelSelected;
+      }
+      if (levelSelected ==  4 && gameState != "startGame") {
+        println("debug");
+        player.pos.x = 100;
+        player.pos.y = height - 300;
+        player.jumpSpeed = 10;
+        player.walkSpeed = 4;
+
+        start = millis();
+        gameState = "startGame";
+        map.level4();
+        level = levelSelected;
+      }
+      if (levelSelected ==  5 && gameState != "startGame") {
+        println("debug");
+        player.pos.x = 100;
+        player.pos.y = height - 300;
+        player.jumpSpeed = 10;
+        player.walkSpeed = 4;
+
+        start = millis();
+        gameState = "startGame";
+        map.level5();
+        level = levelSelected;
+      }
+      if (levelSelected ==  6 && gameState != "startGame") {
+        println("debug");
+        player.pos.x = 100;
+        player.pos.y = height - 300;
+        player.jumpSpeed = 10;
+        player.walkSpeed = 4;
+
+        start = millis();
+        gameState = "startGame";
+        map.level6();
+        level = levelSelected;
+      }
+      if (levelSelected ==  7 && gameState != "startGame") {
+        println("debug");
+        player.pos.x = 100;
+        player.pos.y = height - 300;
+        player.jumpSpeed = 10;
+        player.walkSpeed = 4;
+
+        start = millis();
+        gameState = "startGame";
+        map.level7();
+        level = levelSelected;
+      }
+      if (levelSelected ==  8 && gameState != "startGame") {
+        println("debug");
+        player.pos.x = 100;
+        player.pos.y = height - 300;
+        player.jumpSpeed = 10;
+        player.walkSpeed = 4;
+
+        start = millis();
+        gameState = "startGame";
+        map.level8();
         level = levelSelected;
       }
     }
@@ -80,7 +170,8 @@ class SceneHandler {
   void splashScreen() {
     if (!startup.isPlaying()) {
       startup.play();
-      startup.amp(0.1);
+      startup.amp(0.2
+        );
     }
     background(0);
     textFade();
@@ -112,6 +203,7 @@ class SceneHandler {
     background(0);
     textFont(menuFont, 60);
     textAlign(CENTER);
+    fill(255);
     text("START GAME", width/2, height/2);
     text("HELP", width/2, height/2+100);
     text("ABOUT", width/2, height/2+200);
@@ -164,15 +256,19 @@ class SceneHandler {
       bl.update();
     }
 
-    for (int i = 0; i < luckyblocks.size(); i++) {
-      LuckyBlock lb = luckyblocks.get(i);
-      lb.update();
-    }
 
     for (int i = 0; i < coins.size(); i++) {
       Coin c = coins.get(i);
       c.update();
     }
+
+    for (int i = 0; i < launchs.size(); i++) {
+      LaunchPad lp = launchs.get(i);
+      lp.update();
+    }
+
+    finish.resize(200, 400);
+    image(finish, 1700, map.pos.y-200);
 
 
     textSize(20);
@@ -180,7 +276,7 @@ class SceneHandler {
     //text("Enemies: "+enemys.size(), 50, 20);
     // text("Blocks: " + blocks.size(), 50, 40);
     //  text("Map Length: "+map.mapLength, 50, 60);
-    //  text("Frames: "+frameRate, 50, 80);
+    // text("Frames: "+frameRate, 500, 80);
     //   text("Player X,Y: " + player.pos.x + "," + player.pos.y, 50, 100);
     //   text("Lucky Blocks: " + luckyblocks.size(), 50, 120);
     //   text("Coins: " + coins.size(), 50, 140);
@@ -201,8 +297,12 @@ class SceneHandler {
 
 
   void gameOver() {
-    resetKeys();
-    player.freezePlayer();
+    gameOver = false;
+    player.up = 0;
+    player.down = 0;
+    player.left = 0;
+    player.right = 0;
+    // player.freezePlayer();
     for (int i = 0; i < enemys.size(); i++) {
       Enemy e = enemys.get(i);
       e.freezeEnemies();
@@ -213,6 +313,31 @@ class SceneHandler {
     textSize(70);
     fill(0);
     text("GAME OVER!", width/2, height/4);
+    textSize(40);
+    text("Total Score: " + score, width/2, height/4+100);
+    text("Run Time: " + runtime + " seconds", width/2, height/4+150);
+
+    textSize(30);
+    text("Press any key to return to menu", width/2, height/4+200);
+  }
+
+  void gameFinish() {
+    gameFinish = false;
+    player.up = 0;
+    player.down = 0;
+    player.left = 0;
+    player.right = 0;
+    // player.freezePlayer();
+    for (int i = 0; i < enemys.size(); i++) {
+      Enemy e = enemys.get(i);
+      e.freezeEnemies();
+    }
+
+    textFont(gameOverFont);
+    textAlign(CENTER);
+    textSize(70);
+    fill(0);
+    text("LEVEL COMPLETED!", width/2, height/4);
     textSize(40);
     text("Total Score: " + score, width/2, height/4+100);
     text("Run Time: " + runtime + " seconds", width/2, height/4+150);
