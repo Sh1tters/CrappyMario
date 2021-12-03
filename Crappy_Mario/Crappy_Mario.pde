@@ -22,8 +22,12 @@ PImage[] runningLeft, runningRight, jumpingRight, jumpingLeft, goombaAlive;
 public int level;
 public int collected_coins;
 public int score = 000000;
+public int totalscoreSession = 0;
 public boolean gameOver = false;
 public boolean gameFinish = false;
+public String gameMode = "";
+public String[] Modes = {"Goomba Mines", "Goomba Weather"};
+//Falling Goombas
 
 /* Splash Screen Variables */
 //1

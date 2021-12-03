@@ -55,6 +55,12 @@ class SceneHandler {
       text(i, w, height/2+250);
       w += 200;
     }
+    for (int i = 9; i < 10; i++) {
+      if (i == levelSelected) fill(#F22C2C);
+      else fill(255);
+      textAlign(CENTER);
+      text(i, width/2+100, height/2+450);
+    }
 
 
     if (keyReleased && keyCode == LEFT || keyReleased && key == 'a') {
@@ -62,14 +68,12 @@ class SceneHandler {
       keyReleased = false;
     }
     if (keyReleased && keyCode == RIGHT || keyReleased && key == 'd') {
-      if (levelSelected != 8) levelSelected = levelSelected + 1;
+      if (levelSelected != 9) levelSelected = levelSelected + 1;
       keyReleased = false;
     }
 
     if (keyReleased && keyCode == ENTER) {
-      println(levelSelected);
       if (levelSelected ==  1 && gameState != "startGame") {
-        println("debug");
         player.pos.x = 100;
         player.pos.y = height - 300;
         player.jumpSpeed = 10;
@@ -81,7 +85,6 @@ class SceneHandler {
         level = levelSelected;
       }
       if (levelSelected ==  2 && gameState != "startGame") {
-        println("debug");
         player.pos.x = 100;
         player.pos.y = height - 300;
         player.jumpSpeed = 10;
@@ -93,7 +96,6 @@ class SceneHandler {
         level = levelSelected;
       }
       if (levelSelected ==  3 && gameState != "startGame") {
-        println("debug");
         player.pos.x = 100;
         player.pos.y = height - 300;
         player.jumpSpeed = 10;
@@ -105,7 +107,6 @@ class SceneHandler {
         level = levelSelected;
       }
       if (levelSelected ==  4 && gameState != "startGame") {
-        println("debug");
         player.pos.x = 100;
         player.pos.y = height - 300;
         player.jumpSpeed = 10;
@@ -117,7 +118,6 @@ class SceneHandler {
         level = levelSelected;
       }
       if (levelSelected ==  5 && gameState != "startGame") {
-        println("debug");
         player.pos.x = 100;
         player.pos.y = height - 300;
         player.jumpSpeed = 10;
@@ -129,7 +129,6 @@ class SceneHandler {
         level = levelSelected;
       }
       if (levelSelected ==  6 && gameState != "startGame") {
-        println("debug");
         player.pos.x = 100;
         player.pos.y = height - 300;
         player.jumpSpeed = 10;
@@ -141,7 +140,6 @@ class SceneHandler {
         level = levelSelected;
       }
       if (levelSelected ==  7 && gameState != "startGame") {
-        println("debug");
         player.pos.x = 100;
         player.pos.y = height - 300;
         player.jumpSpeed = 10;
@@ -153,7 +151,6 @@ class SceneHandler {
         level = levelSelected;
       }
       if (levelSelected ==  8 && gameState != "startGame") {
-        println("debug");
         player.pos.x = 100;
         player.pos.y = height - 300;
         player.jumpSpeed = 10;
@@ -163,6 +160,21 @@ class SceneHandler {
         gameState = "startGame";
         map.level8();
         level = levelSelected;
+      }
+
+      if (levelSelected == 9 && gameState != "startGame") {
+        player.pos.x = 100;
+        player.pos.y = height - 300;
+        player.jumpSpeed = 10;
+        player.walkSpeed = 4;
+
+        start = millis();
+        gameState = "startGame";
+        int rand = (int) random(Modes.length);
+        gameMode = Modes[rand];
+        map.levelInfinity();
+        level = levelSelected;
+        println(gameMode, Modes[rand]);
       }
     }
   }
@@ -267,8 +279,10 @@ class SceneHandler {
       lp.update();
     }
 
-    finish.resize(200, 400);
-    image(finish, 1700, map.pos.y-200);
+    if (levelSelected != 9) {
+      finish.resize(200, 400);
+      image(finish, 1700, map.pos.y-200);
+    }
 
 
     textSize(20);
@@ -293,6 +307,8 @@ class SceneHandler {
     int sec = ms/1000;
     runtime = sec;
     text(runtime + "s", 300, 120);
+
+    if (levelSelected == 9) text("Game mode: " + gameMode, width/2, height/2);
   }
 
 
@@ -302,6 +318,7 @@ class SceneHandler {
     player.down = 0;
     player.left = 0;
     player.right = 0;
+    levelSelected = 1;
     // player.freezePlayer();
     for (int i = 0; i < enemys.size(); i++) {
       Enemy e = enemys.get(i);

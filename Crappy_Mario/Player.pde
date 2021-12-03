@@ -172,8 +172,14 @@ class Player {
         }
       } else if (collisionSide == BlockSide.RIGHT) {
         pos.x = pos.x+5;
+        if (sh.levelSelected == 9) {
+          velocity.y = 5;
+        }
       } else if (collisionSide == BlockSide.LEFT) {
         pos.x = pos.x - 5;
+        if (sh.levelSelected == 9) {
+          velocity.y = 5;
+        }
       } else if (collisionSide == BlockSide.BOTTOM) {
         pos.y = pos.y + 5;
       }

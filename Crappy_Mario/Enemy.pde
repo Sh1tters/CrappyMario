@@ -21,7 +21,6 @@ class Enemy {
     pos.x += xspeed;
     for (int i = 0; i < blocks.size(); i++) {
       Block bl = blocks.get(i);
-      //  ellipse(bl.pos.x + 25, bl.pos.y - 25, 5,5);
       if (pos.x > bl.pos.x - 50 && pos.y == bl.pos.y || pos.x - 100> bl.pos.x - 50 && pos.y == bl.pos.y) {
         xspeed *=-1;
       }
@@ -29,16 +28,20 @@ class Enemy {
     if (pos.x < 0 || pos.x > width) {
       xspeed *= -1;
     }
+    
+    if(pos.y < player.ground){
+       pos.y += 1; 
+    }
   }
 
 
   void drawGoomba() {
-    for(int i = 0; i < goombaAlive.length; i++){
+    for (int i = 0; i < goombaAlive.length; i++) {
       int w = (int) size.x;
       int h = (int) size.y;
-            goombaAlive[i].resize(w, h);
+      goombaAlive[i].resize(w, h);
     }
-    
+
     for (int i = 0; i < enemys.size(); i++) {
       Enemy e = enemys.get(i);
       RectangleSide collisionSide = goombaIsDead(e.pos.x, e.pos.y, e.size.x, e.size.y);
@@ -51,6 +54,7 @@ class Enemy {
           efreezey = pos.y;
           gameOver = true;
           gameFinish = false;
+          totalscoreSession += score;
         }
       } else {
         player.velocity.y = -player.jumpSpeed;

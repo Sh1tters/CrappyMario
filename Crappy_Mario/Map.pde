@@ -1,3 +1,6 @@
+import java.util.Timer;
+import java.util.TimerTask;
+
 class Map {
   float mapLength;
   PVector size = new PVector();
@@ -32,6 +35,7 @@ class Map {
     blocks.clear();
     enemys.clear();
     coins.clear();
+    launchs.clear();
     //GROUND
     pos.x = -50;
     for (int i = 0; i < 40; i++) {
@@ -73,7 +77,7 @@ class Map {
     launchs.add(new LaunchPad(50, 50, 950, pos.y-101));
     launchs.add(new LaunchPad(50, 50, 850, pos.y-101));
     launchs.add(new LaunchPad(50, 50, 800, pos.y-101));
-       launchs.add(new LaunchPad(50, 50, 900, pos.y-800));
+    launchs.add(new LaunchPad(50, 50, 900, pos.y-800));
     launchs.add(new LaunchPad(50, 50, 950, pos.y-800));
     launchs.add(new LaunchPad(50, 50, 850, pos.y-800));
     launchs.add(new LaunchPad(50, 50, 800, pos.y-800));
@@ -84,6 +88,7 @@ class Map {
     blocks.clear();
     enemys.clear();
     coins.clear();
+    launchs.clear();
     //GROUND
     pos.x = -50;
     for (int i = 0; i < 40; i++) {
@@ -127,6 +132,7 @@ class Map {
     blocks.clear();
     enemys.clear();
     coins.clear();
+    launchs.clear();
     //GROUND
     pos.x = -50;
     for (int i = 0; i < 40; i++) {
@@ -185,6 +191,7 @@ class Map {
     blocks.clear();
     enemys.clear();
     coins.clear();
+    launchs.clear();
     //GROUND
     pos.x = -50;
     for (int i = 0; i < 40; i++) {
@@ -226,6 +233,7 @@ class Map {
     blocks.clear();
     enemys.clear();
     coins.clear();
+    launchs.clear();
     //GROUND
     pos.x = -50;
     for (int i = 0; i < 40; i++) {
@@ -250,6 +258,7 @@ class Map {
     blocks.clear();
     enemys.clear();
     coins.clear();
+    launchs.clear();
     //GROUND
     pos.x = -50;
     for (int i = 0; i < 40; i++) {
@@ -322,6 +331,7 @@ class Map {
     blocks.clear();
     enemys.clear();
     coins.clear();
+    launchs.clear();
     //GROUND
     pos.x = -50;
     for (int i = 0; i < 40; i++) {
@@ -377,11 +387,79 @@ class Map {
     blocks.clear();
     enemys.clear();
     coins.clear();
+    launchs.clear();
     //GROUND
     pos.x = -50;
     for (int i = 0; i < 40; i++) {
       blocks.add(new Block(50, 50, pos.x, pos.y));
       pos.x+=50;
+    }
+  }
+
+
+  void levelInfinity() {
+    Timer timer = new Timer();
+    blocks.clear();
+    enemys.clear();
+    coins.clear();
+    launchs.clear();
+
+    //GROUND
+    pos.x = -50;
+    for (int i = 0; i < 40; i++) {
+      blocks.add(new Block(50, 50, pos.x, pos.y));
+      pos.x+=50;
+    }
+
+    for (int i = 0, y = 50; i < 30; i++) {
+      blocks.add(new Block(50, 50, 0, pos.y-y));
+      y += 50;
+    }
+
+    for (int i = 0, y = 50; i < 30; i++) {
+      blocks.add(new Block(50, 50, pos.x-50, pos.y-y));
+      y+=50;
+    }
+
+    if (gameMode == "Goomba Mines") {
+      timer.schedule(new TimerTask() {
+
+        @Override
+          public void run() {
+          if (gameOver || gameFinish || gameState == "Levels" || gameMode == "") timer.cancel();
+          enemys.add(new Enemy(50, 50, random(50, width-50), pos.y-50));
+        }
+      }
+      , 0, 500); // 1000 = 1 Sek.
+      timer.schedule(new TimerTask() {
+
+        @Override
+          public void run() {
+          if (gameOver || gameFinish || gameState == "Levels" || gameMode == "") timer.cancel();
+          coins.add(new Coin(25, 25, random(50, width-50), random(pos.y-50, pos.y-200)));
+        }
+      }
+      , 0, 4000); // 1000 = 1 Sek.
+    }
+    if (gameMode == "Goomba Weather") {
+      timer.schedule(new TimerTask() {
+
+        @Override
+          public void run() {
+          if (gameOver || gameFinish || gameState == "Levels") timer.cancel();
+          enemys.add(new Enemy(50, 50, random(50, width-50), random(pos.y-300, pos.y-900)));
+        }
+      }
+      , 0, 1500); // 1000 = 1 Sek.
+      timer.schedule(new TimerTask() {
+ 
+        @Override
+          public void run() {
+          if (gameOver || gameFinish || gameState == "Levels" || gameMode == "") timer.cancel();
+          coins.add(new Coin(25, 25, random(50, width-50), random(pos.y-50, pos.y-200)));
+        }
+      }
+      , 0, 4000); // 1000 = 1 Sek.
     }
   }
 }
