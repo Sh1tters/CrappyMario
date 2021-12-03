@@ -23,6 +23,8 @@ class SceneHandler {
       gameFinish();
     } else if (gameState == "Levels") {
       levels();
+    } else if(gameState == "Custom Map"){
+      mc.main();
     } else if (gameState == "menu") {
       gameOver = false;
       menu();
@@ -59,7 +61,7 @@ class SceneHandler {
       if (i == levelSelected) fill(#F22C2C);
       else fill(255);
       textAlign(CENTER);
-      text(i, width/2+100, height/2+450);
+      text("Mini Game", width/2+100, height/2+450);
     }
 
 
@@ -219,7 +221,8 @@ class SceneHandler {
     text("START GAME", width/2, height/2);
     text("HELP", width/2, height/2+100);
     text("ABOUT", width/2, height/2+200);
-    text("QUIT", width/2, height/2+300);
+    text("CUSTOM MAPS", width/2, height/2+300);
+    text("QUIT", width/2, height/2+400);
     imageMode(CENTER);
     smb.resize(582, 455);
     image(smb, width/2, height/5);
@@ -227,14 +230,15 @@ class SceneHandler {
     if (selected == 1) image(mush, width/2-305, height/2-20);
     if (selected == 2) image(mush, width/2-155, height/2+100-20);
     if (selected == 3) image(mush, width/2-180, height/2+200-20);
-    if (selected == 4) image(mush, width/2-140, height/2+300-20);
+    if (selected == 4) image(mush, width/2-200, height/2+300-20);
+    if (selected == 5) image(mush, width/2-140, height/2+400-20);
 
     if (keyReleased && keyCode == UP || keyReleased && key == 'w') {
       if (selected != 1)  selected = selected - 1;
       keyReleased = false;
     }
     if (keyReleased && keyCode == DOWN || keyReleased && key == 's') {
-      if (selected != 4)   selected = selected + 1;
+      if (selected != 5)   selected = selected + 1;
       keyReleased = false;
     }
 
@@ -243,7 +247,11 @@ class SceneHandler {
         gameState = "Levels";
         keyReleased = false;
       }
-      if (selected == 4) exit();
+      if(selected == 4) {
+        gameState = "Custom Map";
+        keyReleased = false;
+      }
+      if (selected == 5) exit();
     }
   }
 

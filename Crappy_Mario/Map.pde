@@ -2,11 +2,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 class Map {
+  int time;
   float mapLength;
   PVector size = new PVector();
   PVector pos = new PVector();
   // Constructor
   Map() {
+    time = 3000;
     pos.x = 0;
     pos.y = height-100;
     size.x = 50;
@@ -451,8 +453,9 @@ class Map {
         }
       }
       , 0, 1500); // 1000 = 1 Sek.
+
       timer.schedule(new TimerTask() {
- 
+
         @Override
           public void run() {
           if (gameOver || gameFinish || gameState == "Levels" || gameMode == "") timer.cancel();

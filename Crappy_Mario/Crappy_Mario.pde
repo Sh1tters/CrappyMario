@@ -4,6 +4,7 @@ SoundFile startup;
 Map map;
 SceneHandler sh;
 Player player;
+MapCreator mc;
 Enemy[] enemy;
 Block[] block;
 Coin[] coin;
@@ -57,6 +58,7 @@ void setup() {
 
   map = new Map();
   player = new Player();
+  mc = new MapCreator();
   sh = new SceneHandler();
   enemy = new Enemy[unit];
   block = new Block[unit];
