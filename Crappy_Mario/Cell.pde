@@ -1,3 +1,8 @@
+import java.io.FileWriter;
+import java.io.*;
+FileWriter fw;
+BufferedWriter bw;
+
 // A Cell object
 class Cell {
   // A cell object knows about its location in the grid
@@ -15,9 +20,9 @@ class Cell {
 
   void display() {
     updateHighlight();
-    onCellClicked();
     stroke(204, 102, 0);
     rect(x, y, w, h);
+    test();
   }
 
   void updateHighlight() {
@@ -30,12 +35,33 @@ class Cell {
     } else fill(#81CFF5, 100);
   }
 
-  void onItemSelected() {
-  }
+  void test() {
+    for (int i = 0; i < mc.cols; i++) {
+      for (int j = 0; j < mc.rows; j++) {
+        if (selectMode && mouseReleased && (mouseButton == LEFT) && mouseX > i*50 && mouseX < i*50 + 50 && mouseY > j*50 && mouseY < j*50 + 50) {
+          FileWriter fw;
+          BufferedWriter bw;
+          PrintWriter pw;
+          try {
+            fw = new FileWriter(mc.file, true);///true = append
+            bw = new BufferedWriter(fw);
+            pw = new PrintWriter(bw);
 
-  void onCellClicked() {
-    //Right Click? Then reset cell to normal
-    if (mousePressed && (mouseButton == RIGHT)) {
+            // save col & row with current item to txt file
+            String data = i+":"+j+":"+selectedItem+":"+i*50+":"+j*50+":"+w+":"+h;
+
+            pw.write(data + "\n");
+            pw.close();
+          }
+          catch(IOException ioe) {
+            System.out.println("Exception ");
+            ioe.printStackTrace();
+          }
+
+          mouseReleased = false;
+        }
+        //grid[i][j] = new Cell(i*50, j*50, 50, 50);
+      }
     }
   }
 }

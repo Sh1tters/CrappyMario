@@ -28,6 +28,7 @@ public boolean gameOver = false;
 public boolean gameFinish = false;
 public String gameMode = "";
 public String[] Modes = {"Goomba Mines", "Goomba Weather"};
+public boolean mouseReleased = false;
 //Falling Goombas
 
 /* Splash Screen Variables */
@@ -144,6 +145,10 @@ void keyReleased() {
     }
   }
   sh.keyReleased = true;
+}
+
+void mouseReleased(){
+  mouseReleased = true;
 }
 
 

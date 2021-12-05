@@ -176,7 +176,6 @@ class SceneHandler {
         gameMode = Modes[rand];
         map.levelInfinity();
         level = levelSelected;
-        println(gameMode, Modes[rand]);
       }
     }
   }
